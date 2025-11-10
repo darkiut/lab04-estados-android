@@ -17,7 +17,7 @@ import com.tecsup.lab04.ui.theme.Lab04Theme
  * Laboratorio 04 - Estados en Android
  * Alumno: Jose Carlos Vitorino Condori
  * Fecha: 10/11/2025
- * Parte 0: Git - Commit Inicial
+ * Parte 0: Git - Segundo Commit - Agregar contador
  */
 
 class MainActivity : ComponentActivity() {
@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    GreetingScreen()
+                    CounterScreen()
                 }
             }
         }
@@ -37,7 +37,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun GreetingScreen() {
+fun CounterScreen() {
+    var count by remember { mutableStateOf(0) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -54,13 +56,36 @@ fun GreetingScreen() {
             text = "Jose Carlos Vitorino Condori",
             fontSize = 16.sp
         )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Text(
+            text = "Contador: $count",
+            fontSize = 32.sp
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Button(onClick = { count-- }) {
+                Text("-")
+            }
+            Button(onClick = { count = 0 }) {
+                Text("Reset")
+            }
+            Button(onClick = { count++ }) {
+                Text("+")
+            }
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun CounterPreview() {
     Lab04Theme {
-        GreetingScreen()
+        CounterScreen()
     }
 }
