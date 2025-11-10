@@ -17,7 +17,7 @@ import com.tecsup.lab04.ui.theme.Lab04Theme
  * Laboratorio 04 - Estados en Android
  * Alumno: Jose Carlos Vitorino Condori
  * Fecha: 10/11/2025
- * Parte 0: Git - Segundo Commit - Agregar contador
+ * Parte 0: Git - Tercer Commit - Agregar TextField
  */
 
 class MainActivity : ComponentActivity() {
@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CounterScreen()
+                    InteractiveScreen()
                 }
             }
         }
@@ -37,8 +37,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CounterScreen() {
+fun InteractiveScreen() {
     var count by remember { mutableStateOf(0) }
+    var name by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -59,6 +60,26 @@ fun CounterScreen() {
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        // TextField
+        TextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Ingresa tu nombre") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        if (name.isNotEmpty()) {
+            Text(
+                text = "Hola, $name!",
+                fontSize = 20.sp
+            )
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Contador
         Text(
             text = "Contador: $count",
             fontSize = 32.sp
@@ -84,8 +105,8 @@ fun CounterScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun CounterPreview() {
+fun InteractivePreview() {
     Lab04Theme {
-        CounterScreen()
+        InteractiveScreen()
     }
 }
