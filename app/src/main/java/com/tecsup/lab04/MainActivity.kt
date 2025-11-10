@@ -51,7 +51,7 @@ fun ColorfulScreen() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Lab 04 - Estados en Android",
+            text = "Lab 04 - Gestión de Estados", // CAMBIO AQUÍ
             fontSize = 24.sp,
             color = Color(0xFF1976D2)
         )
