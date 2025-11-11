@@ -6,9 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,7 +20,7 @@ import com.tecsup.lab04.ui.theme.Lab04Theme
  * Laboratorio 04 - Estados en Android
  * Alumno: Jose Carlos Vitorino Condori
  * Fecha: 10/11/2025
- * Parte 0: Git - Rama feature-colors
+ * Partes 1, 2 y 3: MovieCounter App
  */
 
 class MainActivity : ComponentActivity() {
@@ -30,108 +32,225 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ColorfulScreen()
+                    MovieCounterApp()
                 }
             }
         }
     }
 }
 
+/**
+ * Pantalla principal de MovieCounter
+ * Jose Carlos Vitorino Condori
+ */
 @Composable
-fun ColorfulScreen() {
-    var count by remember { mutableStateOf(0) }
-    var name by remember { mutableStateOf("") }
-    val buttonColor = if (count >= 0) Color(0xFF4CAF50) else Color(0xFFF44336)
-
+fun MovieCounterApp() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
+        Spacer(modifier = Modifier.height(32.dp))
+
         Text(
-            text = "Lab 04 - Estados en Android",
-            fontSize = 24.sp,
+            text = "MovieCounter",
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
             color = Color(0xFF1976D2)
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Jose Carlos Vitorino Condori",
-            fontSize = 16.sp,
+            fontSize = 14.sp,
             color = Color.Gray
         )
 
+        Spacer(modifier = Modifier.height(48.dp))
+
+        // Parte 1: Contador estático
+        MovieCounterPart1()
+
+        Spacer(modifier = Modifier.height(32.dp))
+        Divider()
         Spacer(modifier = Modifier.height(32.dp))
 
-        // TextField
-        TextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Ingresa tu nombre") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFFE3F2FD),
-                unfocusedContainerColor = Color(0xFFF5F5F5)
-            )
+        // Parte 2: Contador con estado (remember)
+        MovieCounterPart2()
+
+        Spacer(modifier = Modifier.height(32.dp))
+        Divider()
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Parte 3: Contador con persistencia (rememberSaveable)
+        MovieCounterPart3()
+    }
+}
+
+/**
+ * PARTE 1: Contador estático
+ * Jose Carlos Vitorino Condori
+ */
+@Composable
+fun MovieCounterPart1(modifier: Modifier = Modifier) {
+    val count = 0 // Estático
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFE3F2FD)
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        if (name.isNotEmpty()) {
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
-                text = "Hola, $name!",
-                fontSize = 20.sp,
+                text = "Parte 1: Contador Estático",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "You have added $count movies.",
+                fontSize = 18.sp
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { /* No hace nada */ }) {
+                Text("Add Movie")
+            }
+        }
+    }
+}
+
+/**
+ * PARTE 2: Contador con estado (remember)
+ * Jose Carlos Vitorino Condori
+ */
+@Composable
+fun MovieCounterPart2(modifier: Modifier = Modifier) {
+    var count by remember { mutableStateOf(0) }
+    var movieName by remember { mutableStateOf("") }
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFF3E5F5)
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Parte 2: Con remember",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "You have added $count movies.",
+                fontSize = 18.sp
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            TextField(
+                value = movieName,
+                onValueChange = { movieName = it },
+                label = { Text("Movie Name") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    if (movieName.isNotBlank()) {
+                        count++
+                        movieName = ""
+                    }
+                }
+            ) {
+                Text("Add Movie")
+            }
+
+            if (count > 0) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "⚠️ Al rotar la pantalla, se pierde el estado",
+                    fontSize = 12.sp,
+                    color = Color(0xFFF44336)
+                )
+            }
+        }
+    }
+}
+
+/**
+ * PARTE 3: Contador con persistencia (rememberSaveable)
+ * Jose Carlos Vitorino Condori
+ */
+@Composable
+fun MovieCounterPart3(modifier: Modifier = Modifier) {
+    var count by rememberSaveable { mutableStateOf(0) }
+    var movieName by rememberSaveable { mutableStateOf("") }
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFE8F5E9)
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Parte 3: Con rememberSaveable",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "You have added $count movies.",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
                 color = Color(0xFF4CAF50)
             )
-        }
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Contador con color dinámico
-        Card(
-            modifier = Modifier.padding(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = buttonColor.copy(alpha = 0.1f)
+            TextField(
+                value = movieName,
+                onValueChange = { movieName = it },
+                label = { Text("Movie Name") },
+                modifier = Modifier.fillMaxWidth()
             )
-        ) {
-            Text(
-                text = "Contador: $count",
-                fontSize = 32.sp,
-                color = buttonColor,
-                modifier = Modifier.padding(16.dp)
-            )
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
             Button(
-                onClick = { count-- },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFF44336)
-                )
-            ) {
-                Text("-")
-            }
-            Button(
-                onClick = { count = 0 },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF9E9E9E)
-                )
-            ) {
-                Text("Reset")
-            }
-            Button(
-                onClick = { count++ },
+                onClick = {
+                    if (movieName.isNotBlank()) {
+                        count++
+                        movieName = ""
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF4CAF50)
                 )
             ) {
-                Text("+")
+                Text("Add Movie")
+            }
+
+            if (count > 0) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "✓ El estado persiste al rotar la pantalla",
+                    fontSize = 12.sp,
+                    color = Color(0xFF4CAF50),
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }
@@ -139,8 +258,8 @@ fun ColorfulScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun ColorfulPreview() {
+fun PreviewMovieCounter() {
     Lab04Theme {
-        ColorfulScreen()
+        MovieCounterApp()
     }
 }
