@@ -32,12 +32,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MovieCounterApp()
+                    TaskManagerScreen() // CAMBIO AQUÍ
                 }
             }
         }
     }
 }
+
 
 /**
  * Pantalla principal de MovieCounter
